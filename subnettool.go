@@ -6,7 +6,7 @@
 
 * Creation Date : 02-20-2014
 
-* Last Modified : Thu Feb 20 18:16:43 2014
+* Last Modified : Thu Feb 20 18:30:12 2014
 
 * Created By : Kiyor
 
@@ -49,8 +49,8 @@ func Aton(ipnr net.IP) int64 {
 	return sum
 }
 
-func Mtos(str string) int {
-	mask := net.IPMask(net.ParseIP(str).To4())
+func Mtos(strMask string) int {
+	mask := net.IPMask(net.ParseIP(strMask).To4())
 	size, _ := mask.Size()
 	return size
 }
@@ -58,19 +58,18 @@ func Mtos(str string) int {
 func Stom(size int) string {
 	divisor := size / 8
 	remainder := size % 8
-	var s string
-	var f bool
+	var mask string
+	var b bool
 	for i := 1; i <= 4; i++ {
-		if f {
-			s = s + "0."
+		if b {
+			mask = mask + "0."
 			continue
-		}
-		if i <= divisor {
-			s = s + "255."
+		} else if i <= divisor {
+			mask = mask + "255."
 		} else {
-			s = s + fmt.Sprint(2<<7-2<<(7-uint(remainder))) + "."
-			f = true
+			mask = mask + fmt.Sprint(2<<7-2<<(7-uint(remainder))) + "."
+			b = true
 		}
 	}
-	return s[:len(s)-1]
+	return mask[:len(mask)-1]
 }
