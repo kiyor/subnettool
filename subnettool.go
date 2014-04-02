@@ -6,7 +6,7 @@
 
 * Creation Date : 02-20-2014
 
-* Last Modified : Fri Feb 28 17:46:39 2014
+* Last Modified : Wed Apr  2 14:53:48 2014
 
 * Created By : Kiyor
 
@@ -72,4 +72,65 @@ func Stom(size int) net.IP {
 		}
 	}
 	return net.ParseIP(mask[:len(mask)-1])
+}
+
+// base input 1.2.3.4/24 return 1.2.3.0
+func Base(block string) net.IP {
+	_, ipnet, err := net.ParseCIDR(block)
+	if err != nil {
+		fmt.Println(err.Error())
+	}
+	return ipnet.IP
+}
+
+// mask input 1.2.3.4/24 return 24
+func GetMask(block string) int {
+	_, ipnet, err := net.ParseCIDR(block)
+	if err != nil {
+		fmt.Println(err.Error())
+	}
+	ms, _ := ipnet.Mask.Size()
+	return ms
+}
+
+// Len input 1.2.3.4/24 return 255
+func Len(block string) int64 {
+	i := GetMask(block)
+	return 2 << uint(32-i-1)
+}
+
+// get all ip in block, input 1.2.3.4/24 return all ip
+func GetAllIP(block string) []net.IP {
+	var ips []net.IP
+	base := Aton(Base(block))
+	end := Len(block)
+	var i int64
+	for i = 0; i < end; i++ {
+		ip := Ntoa(base + i)
+		ips = append(ips, ip)
+	}
+	return ips
+}
+
+// the nth ip of block, input 1.2.3.4/24 1 return 1.2.3.1
+func Nth(block string, i int64) net.IP {
+	l := Len(block)
+	if i > l {
+		fmt.Println("cannot do it")
+	}
+	ip, _, err := net.ParseCIDR(block)
+	if err != nil {
+		fmt.Println(err.Error())
+	}
+	resnum := Aton(ip) + i - 1
+	return Ntoa(resnum)
+}
+
+func ParseIPInt(ip net.IP) [4]int {
+	var i [4]int
+	token := strings.Split(ip.String(), ".")
+	for k, v := range token {
+		i[k], _ = strconv.Atoi(v)
+	}
+	return i
 }
