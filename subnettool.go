@@ -6,7 +6,7 @@
 
 * Creation Date : 02-20-2014
 
-* Last Modified : Wed Apr  2 14:53:48 2014
+* Last Modified : Wed Apr  2 15:07:29 2014
 
 * Created By : Kiyor
 
@@ -96,6 +96,9 @@ func GetMask(block string) int {
 // Len input 1.2.3.4/24 return 255
 func Len(block string) int64 {
 	i := GetMask(block)
+	if i >= 32 {
+		return 0
+	}
 	return 2 << uint(32-i-1)
 }
 
@@ -104,6 +107,9 @@ func GetAllIP(block string) []net.IP {
 	var ips []net.IP
 	base := Aton(Base(block))
 	end := Len(block)
+	if end == 0 {
+		return []net.IP{Base(block)}
+	}
 	var i int64
 	for i = 0; i < end; i++ {
 		ip := Ntoa(base + i)
@@ -115,6 +121,9 @@ func GetAllIP(block string) []net.IP {
 // the nth ip of block, input 1.2.3.4/24 1 return 1.2.3.1
 func Nth(block string, i int64) net.IP {
 	l := Len(block)
+	if l == 0 {
+		return Base(block)
+	}
 	if i > l {
 		fmt.Println("cannot do it")
 	}
