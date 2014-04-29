@@ -6,7 +6,7 @@
 
 * Creation Date : 02-20-2014
 
-* Last Modified : Wed Apr  2 15:07:29 2014
+* Last Modified : Mon Apr 28 18:05:05 2014
 
 * Created By : Kiyor
 
@@ -62,12 +62,12 @@ func Stom(size int) net.IP {
 	var b bool
 	for i := 1; i <= 4; i++ {
 		if b {
-			mask = mask + "0."
+			mask += "0."
 			continue
 		} else if i <= divisor {
-			mask = mask + "255."
+			mask += "255."
 		} else {
-			mask = mask + fmt.Sprint(2<<7-2<<(7-uint(remainder))) + "."
+			mask += fmt.Sprint(2<<7-2<<(7-uint(remainder))) + "."
 			b = true
 		}
 	}
@@ -93,7 +93,7 @@ func GetMask(block string) int {
 	return ms
 }
 
-// Len input 1.2.3.4/24 return 255
+// Len input 1.2.3.4/24 return 256
 func Len(block string) int64 {
 	i := GetMask(block)
 	if i >= 32 {
