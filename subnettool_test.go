@@ -6,7 +6,7 @@
 
 * Creation Date : 02-27-2014
 
-* Last Modified : Mon Apr 28 18:04:40 2014
+* Last Modified : Sun 14 May 2017 05:04:59 AM UTC
 
 * Created By : Kiyor
 
@@ -107,6 +107,30 @@ func Test_ParseIPInt(t *testing.T) {
 	} else {
 		t.Error(ParseIPInt(net.ParseIP("192.168.1.100")))
 	}
+}
+
+func Test_TestCIDRMatch(t *testing.T) {
+	type item struct {
+		addr    string
+		cidr    string
+		matches bool
+	}
+	var testdata = []item{
+		item{"192.168.1.67", "192.168.1.0/24", true},
+		item{"192.168.1.67", "192.168.1.0/28", false},
+		item{"192.168.1.67", "0.0.0.0/0", true},
+	}
+	for _, it := range testdata {
+		_, cidrnet, err := net.ParseCIDR(it.cidr)
+		if err != nil {
+			panic(err) // assuming I did it right above
+		}
+		myaddr := net.ParseIP(it.addr)
+		if cidrnet.Contains(myaddr) != it.matches {
+			t.Fatalf("Wrong on %+v")
+		}
+	}
+
 }
 
 func match(a, b []net.IP) bool {

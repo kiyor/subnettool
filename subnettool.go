@@ -6,7 +6,7 @@
 
 * Creation Date : 02-20-2014
 
-* Last Modified : Mon Apr 28 18:05:05 2014
+* Last Modified : Sun 14 May 2017 05:03:49 AM UTC
 
 * Created By : Kiyor
 
@@ -142,4 +142,13 @@ func ParseIPInt(ip net.IP) [4]int {
 		i[k], _ = strconv.Atoi(v)
 	}
 	return i
+}
+
+func CIDRMatch(addr, cidr string) bool {
+	_, cidrnet, err := net.ParseCIDR(cidr)
+	if err != nil {
+		return false
+	}
+	myaddr := net.ParseIP(addr)
+	return cidrnet.Contains(myaddr)
 }
