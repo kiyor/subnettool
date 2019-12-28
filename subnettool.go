@@ -152,3 +152,14 @@ func CIDRMatch(addr, cidr string) bool {
 	myaddr := net.ParseIP(addr)
 	return cidrnet.Contains(myaddr)
 }
+
+func CIDRMask(cidr string) string {
+	_, ip, err := net.ParseCIDR(cidr)
+	if err != nil {
+		return "255.255.255.255"
+	}
+	if len(ip.Mask) != 4 {
+		return "255.255.255.255"
+	}
+	return fmt.Sprintf("%d.%d.%d.%d", ip.Mask[0], ip.Mask[1], ip.Mask[2], ip.Mask[3])
+}
